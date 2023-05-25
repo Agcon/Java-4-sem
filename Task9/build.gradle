@@ -1,0 +1,80 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-configuration-processor:2.6.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class' : 'Main'
+        )
+    }
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+}
+
+/*task copyJar(type: Copy) {
+    dependsOn 'jar'
+    from file("$buildDir/libs/Task99-1.0-SNAPSHOT.jar")
+    into file("$rootDir/src/main/resources/")
+}
+
+task removeJar(type: Delete) {
+    delete file("$rootDir/src/main/resources/Task99-1.0-SNAPSHOT.jar")
+}
+
+task buildImage(type: Exec) {
+    dependsOn 'copyJar'
+    finalizedBy 'removeJar'
+    commandLine 'docker', 'build', '-t', 'Task99-1.0', './src/main/resources/'
+}
+
+task runDocker(type: Exec) {
+    dependsOn 'buildImage'
+    finalizedBy 'removeContainer'
+    commandLine 'docker', 'run', '--name', 'Task99-1.0', 'Task99-1.0'
+}
+
+task removeContainer(type: Exec) {
+    finalizedBy 'removeImage'
+    commandLine 'docker', 'container', 'rm', 'Task99-1.0'
+}
+
+task removeImage(type: Exec) {
+    commandLine 'docker', 'image', 'rm', 'Task99-1.0'
+}*/
+
+task task1 {
+    task1.dependsOn jar
+    copy {
+        from jar
+        into 'DockerfilePlace'
+    }
+    finalizedBy {
+        Docker
+    }
+}
+
+task buildDocker(type: Exec) {
+    workingDir 'DockerfilePlace'
+    commandLine 'docker', 'build', '-t', 'Task99', '.'
+}
